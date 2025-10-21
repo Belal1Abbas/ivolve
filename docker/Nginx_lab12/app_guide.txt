@@ -1,0 +1,13 @@
+
+mkdir Nginx_lab12
+cd Nginx_lab12
+ocker volume create nginx_logs
+docker volume ls
+docker volume inspect nginx_logs
+kdir -p ~/nginx-bind/html
+echo "Hello from Bind Mount" > ~/nginx-bind/html/index.html
+docker run -d   --name nginx-container   -p 8084:80   -v nginx_logs:/var/log/nginx   -v ~/nginx-bind/html:/usr/share/nginx/html   nginx
+docker ps
+curl http://localhost:8084
+docker exec -it nginx-container ls /var/log/nginx
+

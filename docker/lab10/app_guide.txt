@@ -1,0 +1,24 @@
+
+git clone https://github.com/Ibrahim-Adel15/Docker-1.git
+
+vim Dockerfile
+FROM maven:3.9.4-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
+
+ls -la
+cd Docker-1
+ls
+cd ..
+docker build -t app3 .
+docker run -dp 8080:80 --name app3-container app3
+docker rm -f $(docker ps -aq)
+docker run -dp 8080:80 --name app3-container app3
+curl http://localhost:8080
+

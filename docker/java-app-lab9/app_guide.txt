@@ -1,0 +1,10 @@
+
+ls
+mvn clean package -DskipTests
+docker build -t app2 .
+docker images
+docker rm -f app2-container
+docker ps -a
+docker rm -f $(docker ps -aq)
+docker run -d -p 8080:8080 --name app2-container app2
+curl http://localhost:8080

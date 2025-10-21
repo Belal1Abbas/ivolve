@@ -1,0 +1,17 @@
+
+git clone https://github.com/Ibrahim-Adel15/Docker-3.git
+vim Dockerfile 
+docker build -t app4 .
+docker run -d -p 8081:8080 --name app4-dev   -e APP_MODE=development   -e APP_REGION=us-east   app4
+docker ps
+curl http://localhost:8081
+
+vim env.list
+docker run -d -p 8082:8080 --name app4-staging --env-file env.list app4
+curl http://localhost:8082
+
+docker ps
+docker build -t app4-prod .
+docker run -d -p 8083:8080 --name app4-prod app4-prod
+curl http://localhost:8083
+
