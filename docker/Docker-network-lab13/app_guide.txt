@@ -1,0 +1,21 @@
+
+git clone https://github.com/Ibrahim-Adel15/Docker5.git
+ls Docker5/
+cd Docker5/frontend/
+vim Dockerfile
+docker build -t frontend-app .
+docker images
+cd ../backend
+vim Dockerfile
+docker build -t backend-app .
+docker images
+cd ..
+docker network create app-network
+docker network ls
+docker run -d --name backend --network app-network backend-app
+docker run -d --name frontend1 --network app-network -p 5001:5000 frontend-app
+docker run -d --name frontend2 -p 5002:5000 frontend-app
+docker network inspect app-network
+docker exec -it frontend1 bash
+apt update -y
+apt install iputils-ping -y
