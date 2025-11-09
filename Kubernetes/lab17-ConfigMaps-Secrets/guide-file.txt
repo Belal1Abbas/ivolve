@@ -1,0 +1,17 @@
+vim mysql-configmap.yaml
+kubectl apply -f mysql-configmap.yaml
+kubectl get configmaps -n ivolve
+kubectl describe configmap mysql-config -n ivolve
+echo -n 'ivolve_pass' | base64
+echo -n 'root_pass' | base64
+vim mysql-secret.yaml
+kubectl apply -f mysql-secret.yaml
+kubectl get secrets -n ivolve
+kubectl describe secret mysql-secret -n ivolve
+kubectl run test-pod --image=busybox -n ivolve --restart=Never -- sleep 3600
+vim resource-quota.yaml
+kubectl get pods
+kubectl delete pod pod1 -n ivolve
+kubectl delete pod pod2 -n ivolve
+kubectl run test-pod --image=busybox -n ivolve --restart=Never -- sleep 3600
+kubectl exec -it test-pod -n ivolve -- sh

@@ -1,0 +1,15 @@
+
+minikube start --driver=docker --nodes=1
+kubectl get nodes
+minikube node add
+kubectl get nodes
+kubectl taint nodes minikube-m02 workload=worker:NoSchedule
+kubectl describe node minikube-m02 | grep Taints
+mkdir minikube-cluster
+cd minikube-cluster
+vim nginx-bod.yaml
+kubectl apply -f nginx-bod.yaml
+kubectl get pods -o wide
+vim nginx-toleration-bod.yaml 
+kubectl apply -f nginx-toleration-bod.yaml
+kubectl get pods -o wide

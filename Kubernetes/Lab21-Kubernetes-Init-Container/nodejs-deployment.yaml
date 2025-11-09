@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejs-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      initContainers:
+        - name: init-mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nodejs-secret
+                  key: DB_PASSWORD
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nodejs-config
+                  key: DB_HOST
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nodejs-config
+                  key: DB_USER
+          command:
+            - sh
+            - -c
+            - |
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS ivolve; CREATE USER IF NOT EXISTS 'appuser'@'%' IDENTIFIED BY 'app-pass'; GRANT ALL PRIVILEGES ON ivolve.* TO 'appuser'@'%'; FLUSH PRIVILEGES;"
+      containers:
+        - name: nodejs-container
+          image: node:18
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: nodejs-config
+            - secretRef:
+                name: nodejs-secret
+          volumeMounts:
+            - name: nodejs-storage
+              mountPath: /usr/src/app/data
+      volumes:
+        - name: nodejs-storage
+          persistentVolumeClaim:
+            claimName: nodejs-pvc
+
